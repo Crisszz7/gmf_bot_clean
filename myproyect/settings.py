@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -183,3 +185,21 @@ TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 API_KEY_GEMINI = os.getenv("API_KEY_GEMINI")
 MY_PHONE_NUMBER = os.getenv("MY_PHONE_NUMBER")
 
+# Configuración para Railway
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    ALLOWED_HOSTS = ['*']
+    DEBUG = False
+
+    # Base de datos desde la variable de entorno
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
+    }
+
+    # Archivos estáticos
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+    # Middleware para servir archivos estáticos
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
