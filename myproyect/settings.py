@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8m5n*v$aov%e#55et7582i^y2dxn$ghuir&cigva6@phn@pmmq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -185,30 +185,3 @@ TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 API_KEY_GEMINI = os.getenv("API_KEY_GEMINI")
 MY_PHONE_NUMBER = os.getenv("MY_PHONE_NUMBER")
 
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    INSTALLED_APPS.append('whitenoise.runserver_nostatic')
-
-# Añade esto a la parte inferior de tu settings.py
-
-# Configuración para Render
-if 'RENDER' in os.environ:
-    ALLOWED_HOSTS = ['*']
-    DEBUG = False
-    
-    # Base de datos
-    DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
-    }
-    
-    # Archivos estáticos
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    
-    # Middleware para servir archivos estáticos
-    if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
-        MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    
-    # Cookies seguras
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
