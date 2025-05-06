@@ -1,0 +1,95 @@
+{% load static %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "styles/pip.css" %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'imgs/icon-x.png' %} ">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+    {% tailwind_css %}
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo_content">
+            <div class="logo border-solid flex p-1">
+                <img class="h-[57px] object-contain" src="{% static '/imgs/logo-fltrigal-sin-fondo.png' %}" alt="Logo">
+                <div>
+                    <h1 class="text-white font-montserrat text-lg font-bold ">{{admins.place}}</h1>
+                    <span class="text-white font-montserrat text-sm font-light">{{admins.username}}</span>
+                </div>
+            </div>
+        </div>
+        <ul class="mt-3 border-t-2 border-yellow-400 border-solid">
+            {% if admins.username == 'admin' %}
+            <li class="relative h-12 w-full my-0 mx-1 flex justify-center items-center ">
+                <a href="{% url 'message-ai' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl ">
+                    <i class='bx bx-bot  m-2 '> </i>
+                    <span> BILLY</span>
+                </a>
+            </li>
+            <li class="relative h-12 w-full my-0 mx-1 flex justify-center items-center ">
+                <a href="{% url 'sign_up' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl ">
+                    <i class='bx bxs-florist m-2'></i>
+                    <span> Sedes  </span>
+                </a>
+            </li>
+            {% else %}
+            <li class="relative h-12 w-full my-0 mx-1 ">
+                <a href="{% url 'home' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl"> 
+                    <i class='bx bx-home-alt-2  font-light m-2'></i>
+                    <span> Inicio </span>
+                </a>
+                {% comment %} <span class="tooltip"> Whatsapp Tip </span> {% endcomment %}
+            </li>
+            <li class="relative h-12 w-full my-0 mx-1 flex justify-center items-center  font-light">
+                <a href="{% url 'whatsapp' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl ">
+                    <i class='bx bxl-whatsapp font-light m-2' > </i>
+                    <span> WhatsApp </span>
+                </a>
+                {% comment %} <span class="tooltip"> Whatsapp Tip </span> {% endcomment %}
+            </li>
+            <li class="relative h-12 w-full my-0 mx-1 flex justify-center items-center ">
+                <a href="{% url 'requestUser' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl "> 
+                    <i class='bx bx-user-pin m-2' ></i>
+                    <span> Postulantes </span>
+                </a>
+                {% comment %} <span class="tooltip"> Whatsapp Tip </span> {% endcomment %}
+            </li>
+            <li class="relative h-12 w-full my-0 mx-1 flex justify-center items-center ">
+                <a href="{% url 'sms' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl">
+                    <i class='bx bx-message font-montserrat m-2'>  </i>
+                    <span> SMS </span>
+                </a>
+                {% comment %} <span class="tooltip"> Whatsapp Tip </span> {% endcomment %}
+            </li>
+            {% endif %}
+        </ul>
+        <div class="profile_content absolute bottom-0 left-0 text-white w-full mb-3">
+            <div class="profile relative p-2 h-14 flex flex-col justify-center">
+                <div class="profile_details h-auto p-2 flex flex-col ">
+                    <a href="{% url 'logout' %}" class="text-gray-50 w-full hover:underline hover:text-blue-100 font-montserrat font-semibold h-full flex items-center text-lg hover:underlinerounded-xl">
+                        <i class="bx bx-log-out font-montserrat m-2"></i>
+                        <span> SALIR </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="extends_content">
+         <div class=" grow flex justify-center items-center">
+        {% block contenido %}
+
+        {% endblock  %}
+        </div>
+        {% comment %} <footer class="bg-white absolute bottom-0 left-0 p-2  flex justify-center  ">
+            <span class="text-sm "> Derechos reservados - DARTISOFT® 2025  </span>
+        </footer> {% endcomment %}
+    </div>
+</body>
+</html>

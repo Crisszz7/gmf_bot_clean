@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href={% static "/styles/tick.css" %}>
+    <link rel="icon" type="image/x-icon" href="{% static 'imgs/icon-x.png' %} ">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title> {{ title }} </title>
+</head>
+<body>
+    <div class="container--box">
+        <div class="box">
+            {% comment %} <p class="text-slogan-billy"> Billy es tu asesor virtual!</p> {% endcomment %}
+            <div class="boxing--info">
+                <div class="info--text">
+                    <div class="billy">
+                        <h1> CHATEA CON BILLY! </h1>
+                        <p> Billy es el asesor virtual de <em> Flores El Trigal</em>, <br> con el podrás resolver tus dudas!</p>
+                        <a href=""> Chatear con Billy <i class='bx bxl-whatsapp' ></i></a>
+                    </div>
+                    <div class="billy-img">
+                        <img class="billy-logo" src={% static '/imgs/billy-saltando.png' %} alt="">
+                        <h2 class="text"> BILLY! </h2>
+                        <span class="linea--uno"></span>
+                        <span class="linea--dos"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="boxing--login">
+                <span class="linea--tres"></span>
+                <span class="linea--cuatro"></span>
+                <form class="login" method="post">
+                    <div class="slogan-logo">
+                        <img src="{% static 'imgs/logo-trigal.png' %}" alt="" >
+                    </div>
+                    {% csrf_token %}
+                    {{userLoginForm}}
+                    <button class="link--session"> INGRESAR  </button>
+                    {% if message %}
+                        <span class="message--error" id="mensaje"> <i class='bx bx-no-entry'></i>  {{ message }}  </span>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/hola.js' %}"></script>
+</body>
+</html>

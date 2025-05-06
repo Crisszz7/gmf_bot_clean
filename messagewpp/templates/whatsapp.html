@@ -1,0 +1,123 @@
+{% extends "template.html" %}
+{% load static %}
+{% block contenido %}
+    <div class="flex flex-row md:flex-row gap-6 p-6  w-11/12">
+        <div class="basis-5/12 md:w-1/2 bg-white shadow-md rounded-lg p-6">
+            <h1 class="text-sm font-montserrat font-light">
+                <i class="bx bx-info-circle"></i> Envio y creación de mensajes para WhatsApp
+            </h1>   
+                <div class=" p-2" >
+                    <form action="" method="post" class="">
+                        {% csrf_token %}
+                        <div id="drop-zone" class="drop-zone"  >
+                                {{ form.as_p }}
+                        </div>
+                        <br>
+                        <div class="flex flex-col justify-evenly items-center">
+                            <button type="submit" name="send_message" class="bg-green-400 p-3 font-medium rounded-lg w-auto"><i class='bx bxs-send' ></i> Enviar mensajes a varios </button>
+                        </div>
+                    </form>
+                            <div class="m-3 flex flex-col justify-evenly items-center ">
+                                <button name="hola" class="bg-blue-500 p-3 font-medium rounded-lg w-auto"id="openModal"><i class='bx bx-plus-circle'></i> Crear Mensaje </button>
+                             </div>
+                    </div>
+                    <div class="bg-[#1F3361] rounded-lg">
+                        <ul class="container container-maxi">
+                            <aside class="text-sm font-montserrat font-light text-white mb-3">
+                                Mensajes guardados
+                            </aside>
+                            {% for template in messageTemplates %}
+                            <form action="{% url 'message-delete' template.id %}" method="post" class=" mb-3 h-min">
+                                {% csrf_token %}
+                                <li draggable="true"  id="template-{{ template.id }}" ondragstart="drag(event)" class=" p-2 rounded bg-white cursor-grabbing">
+                                    {{ template.body }}
+                                </li>
+                                <button class="text-red-500 font-bold w-full "> ELiminar <i class='bx bx-trash' ></i>  </button>
+                            </form>
+                            {% empty %}
+                                <li class="text-white "> Crea tu primera plantilla 😉 </li>
+                            {% endfor %}
+                        </ul>
+                </div>
+        </div>
+        <div class=" w-full bg-white shadow-md mx-3 rounded-2xl p-6 basis-7/12 ">
+            <h2 class="text-sm font-montserrat font-light"><i class='bx bx-info-circle'></i> Carga tus archivos de Excel con numeros de Celular </h2>
+            <p> <strong> El Excel cargado debe tener una columna con el nombre 'Celular' para que el envio funcione </strong> </p>
+            <form method="post" enctype="multipart/form-data" class=" flex flex-col justify-around">
+                {% csrf_token %}
+                {{formUploadFile.as_p}}
+                <button type="submit" name="upload_excel" class="bg-green-600 text-white p-2 font-medium rounded-lg w-1/2 mt-3 self-center"> Subir Excel </button>
+            </form>
+            <div class="overflow-y-auto p-3 container-maxidos">
+                {% for hoja in hojas_info %}
+                <div class="file-container">
+                <table class="max-w-full bg-neutral-50">
+                    <caption class="caption-bottom">
+                        Nombre del Archivo: {{ hoja.title }}  <!-- Usar campos del modelo UploadedFile -->
+                    </caption>
+                    <thead class="p-4">
+                        <tr>
+                            {% with columns=hoja.get_columns %}  <!-- Método en el modelo para obtener columnas -->
+                                {% for columna in columns %}
+                                    <th class="border-solid border-gray-300 border-1 p-2 bg-gray-200 font-bold">{{ columna }}</th>
+                                {% endfor %}
+                            {% endwith %}
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% with data=hoja.get_data %}  <!-- Método en el modelo para obtener datos -->
+                            {% for fila in data %}
+                                <tr>
+                                    {% for valor in fila.values %}
+                                        <td class="border-b-2 border-l-2 border-r-2 border-solid border-gray-200 p-3">{{ valor }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        {% endwith %}
+                    </tbody>
+                </table>
+                <form method="post" class="delete-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="file_id" value="{{ hoja.id }}">
+                    <button 
+                        type="submit" 
+                        name="delete_file" 
+                        class="bg-red-500 p-2 rounded-lg mt-2"
+                        onclick="return confirm('¿Estás seguro de eliminar este archivo?')">
+                        <i class='bx bx-trash'></i> Eliminar
+                    </button>
+                </form>
+            </div>
+            {% empty %}
+                <p class="font-montserrat font-bold text-[#1F3361] ">No hay archivos subidos.</p>
+            {% endfor %}
+            </div>
+        </div>
+        {% comment %} {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %} {% endcomment %}
+        <div class="box-modalin" id="modalin-close">
+            <div class="modalin p-3">
+                <i class='bx bx-x' style="color: red;" id="close"></i>
+                <form action="" method="post" class="w-full h-full rounded-lg flex flex-col justify-centerp-2">
+                    {% csrf_token %}
+                    {{formMessageTemplate.as_p}}
+                    <button type="submit" name="create_template" class="bg-blue-400 p-3 rounded-lg w-2/3 font-medium m-auto" > Crear Plantilla de Mensaje </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="not-excel" class="messageError---excel">
+        <p> {{notExcel}}</p>
+    </div>
+        <span id="status--message" class="messageStatus">{{ status_message }}</span>
+        <script src="{% static 'js/Myscripts.js' %}"></script>
+        <script src="{% static 'js/dragDrop.js' %}"> </script>
+    {% endblock contenido %}

@@ -1,0 +1,73 @@
+{% extends 'template.html' %}
+{% load static %}
+{% block contenido %}
+<div class="w-full h-dvh min-h-max bg-[#ffffff7f] flex flex-col justify-center items-center relative p-4">
+  <div class=" w-11/12 h-min p-4 border bg-white rounded-md relative" >
+    <h1 class=" m-auto font-bold"> Formulario de registro para un administrador de sede</h1>
+    <form action="" method="post" class="w-full grid grid-cols-2 gap-4 h-full ">
+      {% csrf_token %}
+      <div>
+        <p>{{userCreationForm.username.label}}</p>
+        {{userCreationForm.username}}
+      </div>
+      <div>
+        <p>{{userCreationForm.email.label}}</p>
+        {{userCreationForm.email}}
+      </div>
+      <div>
+        <p>{{userCreationForm.place.label}}</p>
+        {{userCreationForm.place}}
+      </div>
+      <div>
+        <p>{{userCreationForm.password1.label}}</p>
+        {{userCreationForm.password1}}
+      </div>
+      <div>
+        <p>{{userCreationForm.password2.label}}</p> 
+        {{userCreationForm.password2}}
+      </div>
+      <button class="bg-blue-200 text-blue-700 h-max m-auto p-3 rounded-md hover:bg-blue-500 hover:text-white transition-colors"> Registrar el administrador </button>
+    </form>
+  </div>
+  <h3 class="m-3"> Usuarios y sede <i class='bx bx-building-house'></i> </h3>
+  <div class="w-11/12 grid grid-cols-2 gap-1 p-3 bg-white">
+    {% for item in sedes_con_emails %}
+    <div class="flex flex-col w-full hover:-translate-y-3 transition-transform  rounded-md">
+      <div class="flex flex-col w-full p-3 border border-neutral-400 ">
+        <p>{{ item.sede }}</p>
+        <p> {{item.username}}</p>
+        <p >{{ item.emails }}</p>
+      </div>
+      <div class="w-full flex justify-center items-center border border-neutral-400">
+        <form action="{% url 'sign_up-delete' item.id %}" method="post" class="flex flex-col items-center p-2">
+          <p> Para eliminar ingresa la contraseña de {{item.sede}} </p>
+          {% csrf_token %}
+          <input type="hidden" name="admin_id">
+          <input type="password" name="password-confirm-delete" class="border border-gray-300 rounded-lg p-1 my-2 w-full" placeholder="Contraseña" required>
+          <button type="submit" class="text-red-500 text-2xl hover:bg-red-200 hover:text-red-600 p-2 rounded-full" onclick="return confirm('¿Realmente deseas eliminarlo?')">
+            <i class="bx bx-trash"></i> 
+          </button>
+        </form>
+      </div>
+    </div>
+    {%empty%}
+    <div class="flex flex-col font-montserrat rounded-md border border-gray-500 bg-white p-3">
+      <p> No hay sedes actualmente</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% if messages %}
+    {% for message in messages %}
+      <div id="messages-container" class="space-y-2 fixed top-5 right-5 z-50 p-4 rounded-lg
+        {% if message.tags == 'success' %} bg-green-100 text-green-800
+        {% elif message.tags == 'error' %} bg-red-100 text-red-800
+        {% elif message.tags == 'warning' %} bg-yellow-100 text-yellow-800
+        {% else %} bg-gray-100 text-gray-800
+        {% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+{% endif %}
+</div>
+<script src="{% static 'js/hola.js' %}"></script>
+{% endblock contenido %}

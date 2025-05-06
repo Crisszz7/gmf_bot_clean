@@ -1,0 +1,139 @@
+{% extends "template.html" %}
+{% load custom_filters %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block contenido %}
+    <div class="border p-3 w-full h-dvh ">
+        <h1 class="p-1 font-bold font-montserrat"><i class='bx bx-info-circle'></i> Asesor y datos de usuario </h1>
+        <p class="font-montserrat font-light p-3"> Aca podras encontrar informacion de los datos de usuarios que han usado el canal de Whatsapp, <br>
+        ademas, podras ver si algún aplicante esta esperando por asesoria en <strong class="  text-blue-600 font-bold underline-offset-2"> Estado Solicitud</strong></p>
+        <h2 class="font-montserrat font-bold mb-2"> Solicitudes sede {{ admins.place}} </h2>
+        <div class=" relative flex items-center m-2 ">
+            <button onclick="mostrarTabla()" class="m-1 hover:cursor-pointer  bg-neutral-50 p-2 rounded-lg hover:bg-neutral-100  "><i class='bx bx-table'></i> Ver como tabla </button>
+            <button onclick="mostrarCard()" class="m-1 hover:cursor-pointer  bg-neutral-50 p-2 rounded-lg hover:bg-neutral-100"><i class='bx bx-id-card'></i> Ver como Carta </button>
+            <form action="{% url 'descargar-excel' admins.place.id %}" method="post">
+                {% csrf_token %}
+                <button class="bg-neutral-50 text-green-700 p-2 rounded-lg m-1 flex">  Descargar Excel   </button>
+            </form>
+        </div>
+        {% if messages %}
+            <div class="p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-4 rounded-lg">
+                {% for message in messages %}
+                    <p> <i class='bx bx-info-circle'></i> {{ message }} </p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="overflow-y-auto bg-neutral-100 w-full max-h-[32rem] p-3" >
+            <div  id="vista-card" class="mhidden shadow-sm m-3 w-full ">
+                {% for user in usuario %}
+                <div class="shadow-sm bg-[#0F1A37] m-3 text-white flex flex-row rounded-lg" >
+                    <img src="{% static 'imgs/logo-fltrigal-sin-fondo.png' %}" alt="" class="basis-1/3 w-1 object-contain">
+                    <div class="basis-2/3 p-3 ">
+                        <h3 class="font-montserrat font-bold"> Nombre </h3>
+                        <span class="font-montserrat">{{ user.nameUser|default:"Nada aquí" }}</span>
+                        <h3 class="font-montserrat font-bold"> Documento </h3>
+                        <p class="font-montserrat"> {{ user.documentUser}}</p>
+                        <h3 class="font-montserrat font-bold"> Telefono </h3>
+                        <p class="font-montserrat"> {{ user.phoneNumberUser }}</p>
+                        <h3 class="font-montserrat font-bold"> Experiencia  </h3>
+                        <p class="font-montserrat">  {{ user.experienceUser}}</p>
+                        <h3 class="font-montserrat font-bold"> Archivos Personales </h3>
+                        <span >
+                            {% if user.cvUser and user.cvUser.name %}
+                                <a class="text-yellow-300" href="{{ user.cvUser.url }}" target="_blank" download><i class='bx bx-download' ></i> </a>
+                            {% else %}
+                                <span> Nada aquí </span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        <div class="relative bg-yellow-300">
+            <form action="" method="post" >
+                {% csrf_token %}
+                <div class="sticky -top-4 p-2 bg-neutral-100 w-full shadow-sm">
+                <select name="select-user-job" id="">
+                    <option value=""> --- </option>
+                    <option value=1> Aguas Claras</option>
+                    <option value=2> Caribe </option>
+                    <option value=3> Manantiales</option>
+                    <option value=4> Olas </option>
+                </select>
+
+                    <button type="submit" name="send_user_check" class="bg-blue-300 text-blue-800 p-2 rounded-lg"> Enviar a otra sede <i class='bx bxs-user-detail'></i></button>
+                    <button class="p-2 bg-yellow-300 text-yellow-800 rounded-lg"> Aprobar postulación <i class='bx bxs-user-check'></i> </button>
+                    <button class="p-2 bg-red-300 text-red-800 rounded-lg"> Descartar postulación <i class='bx bxs-user-x'></i> </button>
+                </div>
+            <table id="vista-table" class="bg-neutral-100 p-2 rounded-md border-2 border-solid border-neutral-300">
+                <thead>
+                    <tr>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2 "><i class='bx bx-list-check'></i></th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Nombre</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Documento</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Whatsapp</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Experiencia</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Residencia </th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Fecha y Hora solicitud</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2">Archivo</th>
+                        <th class="bg-neutral-50 p-2 font-montserrat shadow-sm  border-solid border-2"> <i class='bx bx-user-pin'></i> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in usuario %}
+                    <tr class="hover:bg-neutral-200">
+                        <td class="p-2 border-solid border-b-2 border-neutral-300">
+                            <input type="checkbox" name="usuario[]" value="{{ item.id }}" class="checked:text-yellow-400 bg-neutral-300">
+                        </td>
+                        <td class="p-2 border-solid border-b-2 border-neutral-300"> {{ item.nameUser }}  </td>
+                        <td class="p-2 border-solid border-b-2 border-neutral-300">{{ item.documentUser }}</td>
+                        <td class="p-2 border-solid border-b-2 border-neutral-300">
+                            <a class="hover:text-green-500 hover:underline" href="https://wa.me/{{ item.phoneNumberUser|replace:'whatsapp:+,' }}" target="_blank">
+                                {{ item.phoneNumberUser }}
+                            </a>
+                        </td>                        
+                        <td class="p-2 border-solid border-b-2 border-neutral-300">{{ item.experienceUser }}</td>
+                        
+                        {% if item.placeUser %}
+                            <td class="p-2 border-solid border-b-2 border-neutral-300"> {{item.placeUser}} </td>
+                        {% else %}
+                            <td class="text-red"> {{item.placeUser}} </td>  
+                        {% endif %}
+                        <td class="p-2 border-solid border-b-2 border-neutral-300">  {{item.dateRequestUser}}</td>
+                        <td class=" border-solid border-b-2 m-2 border-neutral-300 text-center">
+                            {% if item.cvUser and item.cvUser.name %}
+                                <a class=" p-3 rounded-lg m-1 hover:bg-transparent text-blue-500 hover:border-2 hover:border-blue-500 transition-colors" href="{{ item.cvUser.url }}" target="_blank" download><i class='bx bx-download' ></i> </a>
+                            {% else %}
+                                <span> Nada aquí</span>
+                            {% endif %}
+                        </td>
+                        <td class="border-solid border-b-2 m-2 border-neutral-300 text-center">
+                            <i class="bx bx-dots-vertical-rounded  p-1  hover:cursor-pointer tool-menu-edit-delete-postulante"></i>
+                        </td>
+                        <td class="relative">
+                            <div class="absolute top-2 right-5 w-max bg-white p-3 rounded-lg menu-edit-delete-postulante hidden shadow-sm">
+                                <a href="{% url 'postulacion-edit' item.id  %}" class=" border-gray-400 w-full p-2 hover:bg-neutral-200 rounded-lg"><i class='bx bx-edit-alt'></i> Editar </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </form>
+        </div>
+        <span class="absolute top-0 right-1 text-base m-3 hover:cursor-pointer hover:text-[#6B6D6D] font-montserrat" onclick="confirm('desea eliminar lo?')">  <i class='bx bx-history'>  </i> Historico de postulantes </span>
+    </div>
+    <script src="{% static 'js/Myscripto.js' %}"></script>          
+{{message }}
+    {% endblock contenido %}
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "template.html" %}
+{% load static %}
+{% block contenido %}
+    <div class="w-full h-dvh flex justify-center items-center relative bg-[#ffffffbf]">
+        <div class=" w-11/12 h-4/5 p-2 ">
+            <h1 class="text-5xl m-2 font-bold p-1 font-montserrat"> Aqui van las respuesta de BILLY ! </h1>
+            {% if mensaje %}
+                <p style="color: green;">{{ mensaje }}</p> 
+            {% endif %}
+            <div class="w-full h-5/6 flex flex-row mb-20 bg-white border border-gray-200 p-3 rounded-md">
+                <div class=" grid grid-cols-2 gap-2 items-center h-full basis-2/3 p-3 overflow-y-auto">
+                    {% for ai_message in ai_message_list %}
+                    <div class="flex flex-col mb-4 bg-white border border-gray-200 shadow-2xs rounded-xl p-4 h-max">
+                        <p class="font-montserrat font-light">{{ai_message.ask}}</p> 
+                    </div>
+                    <div class="flex flex-col mt-4 bg-[#1F3361] text-white border border-gray-200 shadow-2xs rounded-xl p-4 h-max" >
+                        <p class="font-montserrat font-light">{{ai_message.answer}}</p>
+                        <div class=" flex flex-row bg-white text-black rounded-lg p-1 font-semibold font-montserrat ">
+                            <a href="{% url 'message-ai_details' ai_message.id %}" class="basis-2/4 text-center border-r-4 hover:text-blue-500 "> Editar </a>
+                            <form action="{% url 'message-ai_delete' ai_message.id %}" class="w-full basis-2/4 " method="post">
+                                {% csrf_token %}
+                                <button  class="justify-center  w-full hover:text-blue-500" > ELiminar </button>
+                            </form>
+                        </div>
+                    </div>
+                    {%empty%}
+                    <div class="flex flex-col text-2xl font-montserrat bg-white border border-gray-200 border-r-0 rounded-xl p-4 h-max">
+                        <p> Billy aun no cuenta con mensajes. <br><strong>Creale el primero! 📝</strong> </p>
+                    </div>
+                    <div class=" p-3 flex justify-center text-[1rem]  ">
+                        <p class="bg-neutral-100 p-3 shadow-inner"> Dale <strong>Click</strong> al botón que señala Billy <i class='bx bx-right-arrow-alt '></i></p>
+                    </div>
+                    {% endfor %} 
+                </div>
+                <div class="flex flex-row basis-1/3 w-full justify-center items-center ">
+                    <button class="p-3 text-blue-950 border-2 border-gray-200 h-max rounded-3xl text-4xl btn-click-modal-form" > <i class='bx bx-message-square-add'></i> </button>
+                    <img src="{% static '/imgs/ChatGPT_Image_2_may_2025__08_41_47-removebg-preview.png' %}" alt="" class=" max-h-full ">
+                </div>
+            </div>
+        </div> 
+        <div class="box-modal absolute w-full h-full bg-[#00000069]  flex-col justify-center items-center hidden">
+            <form action="{% url 'message-ai' %}" method="post" class="flex flex-col bg-white p-3 w-10/12 rounded-md relative">
+                {% csrf_token %}
+                <h3 class="font-montserrat font-bold"> Formulario para la creación de un nuevo mensaje de Billy</h3>
+                {{form.ask.label}}
+                {{form.ask}}
+                {{form.answer.label}}
+                {{form.answer}}
+                <button class="py-3 px-4 w-6/12 m-auto gap-x-2 text-sm font-bold font-montserrat rounded-lg border border-transparent bg-[#1F3361] text-white hover:bg-[#264386] focus:outline-hidden focus:bg-blue-700 "> Crearle el mensaje </button>
+                <i class='bx bx-x absolute top-5 r-5 rounded-full bg-neutral-200'></i>
+            </form>
+        </div> 
+    </div>
+    <script src="{% static 'js/hola.js' %}"></script>
+{% endblock contenido %}

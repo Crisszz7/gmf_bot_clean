@@ -1,0 +1,22 @@
+{% extends 'template.html' %}
+{% load static %}
+{% block  contenido %}
+<div class="  p-3">
+  <h1><i class='bx bx-objects-vertical-bottom'></i> Datos de mensajes por dia</h1>
+  <form method="get" action="">
+    Desde:
+    <input type="date" name="fecha_inicio" value="{{ fecha_inicio|default_if_none:'' }}">
+    Hasta:
+    <input type="date" name="fecha_fin" value="{{ fecha_fin|default_if_none:'' }}">
+    <button type="submit" class="m-2 hover:cursor-pointer  bg-neutral-50 p-2 rounded-lg hover:bg-neutral-100">Filtrar</button>
+  </form>
+  
+  {% if grafico %}
+    <h3>Total de personas que escribieron: {{ total }}</h3>
+    <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico de mensajes por fecha" class="w-full rounded-lg">
+  {% else %}
+    <p>No hay datos para mostrar.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

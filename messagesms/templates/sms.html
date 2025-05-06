@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block contenido %}
+    <div class="bg-white shadow-md max-w-screen-sm mx-3 my-3 rounded-2xl">
+        <h1 class="p-2 rounded-md font-bold font-montserrat"><i class='bx bx-info-circle'></i> Envia mensajes por medio de SMS  </h1>
+        <form action="" method="post" class="flex p-3 custom_form--sms font-montserrat">
+            {% csrf_token %}
+            {{ formSendNewMessage.as_p}}
+            <div class=" flex flex-col justify-center items-center p-3">
+                <button name="enviar_sms" class="bg-blue-400 p-3 rounded-lg w-52 font-bold"> Enviar </button>
+            </div>
+        </form>
+
+    </div>
+
+    {% endblock contenido %}
+</body>
+</html>

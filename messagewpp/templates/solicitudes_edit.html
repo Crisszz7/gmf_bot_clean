@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% load static %}
+{% block contenido %}
+<div class="bg-yellow-300 w-11/12 h-5/6 p-3">
+    <form action="" method="post">
+        <input type="text" name="" id="" value="{{ postulado.nameUser}}">
+        <input type="number" value="{{ postulado.documentUser}}" >
+        <input type="text" value="{{postulado.experienceUser}}">
+        <p>{{ postulado.phoneNumberUser }}</p>
+    </form>
+</div>
+{% endblock  %}
