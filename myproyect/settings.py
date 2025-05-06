@@ -188,21 +188,27 @@ MY_PHONE_NUMBER = os.getenv("MY_PHONE_NUMBER")
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     INSTALLED_APPS.append('whitenoise.runserver_nostatic')
 
-# Configuración para Railway
-if os.environ.get('RAILWAY_ENVIRONMENT'):
+# Añade esto a la parte inferior de tu settings.py
+
+# Configuración para Render
+if 'RENDER' in os.environ:
     ALLOWED_HOSTS = ['*']
     DEBUG = False
-
-    # Base de datos desde la variable de entorno
-    DATABASE_URL = os.environ.get('DATABASE_URL')
+    
+    # Base de datos
     DATABASES = {
-        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
+        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
     }
-
+    
     # Archivos estáticos
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+    
     # Middleware para servir archivos estáticos
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    if 'whitenoise.middleware.WhiteNoiseMiddleware' not in MIDDLEWARE:
+        MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # Cookies seguras
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
