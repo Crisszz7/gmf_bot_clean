@@ -185,6 +185,9 @@ TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 API_KEY_GEMINI = os.getenv("API_KEY_GEMINI")
 MY_PHONE_NUMBER = os.getenv("MY_PHONE_NUMBER")
 
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    INSTALLED_APPS.append('whitenoise.runserver_nostatic')
+
 # Configuración para Railway
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     ALLOWED_HOSTS = ['*']
