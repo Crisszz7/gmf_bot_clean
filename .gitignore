@@ -17,4 +17,5 @@ __pycache__/
 # Migraciones innecesarias
 **/migrations/*.pyc
 
-/media/
+#media
+media/
